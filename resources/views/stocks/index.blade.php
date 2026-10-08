@@ -130,10 +130,12 @@
     @endif
 
     <x-app.drawer title="{{ $editing ? 'Edit unit stok' : 'Tambah stok' }}" open="drawerOpen" id="stock-drawer">
-        <div class="mb-4 flex gap-2" x-show="!editing">
-            <button type="button" @click="mode='single'" :class="mode === 'single' ? 'bg-primary-soft text-primary' : 'text-text-muted'" class="rounded-md px-3 py-2 text-xs font-semibold">Satu unit</button>
-            <button type="button" @click="mode='bulk'" :class="mode === 'bulk' ? 'bg-primary-soft text-primary' : 'text-text-muted'" class="rounded-md px-3 py-2 text-xs font-semibold">Banyak IMEI</button>
-        </div>
+        @unless ($editing)
+            <div class="mb-4 flex gap-2">
+                <button type="button" @click="mode='single'" :class="mode === 'single' ? 'bg-primary-soft text-primary' : 'text-text-muted'" class="rounded-md px-3 py-2 text-xs font-semibold">Satu unit</button>
+                <button type="button" @click="mode='bulk'" :class="mode === 'bulk' ? 'bg-primary-soft text-primary' : 'text-text-muted'" class="rounded-md px-3 py-2 text-xs font-semibold">Banyak IMEI</button>
+            </div>
+        @endunless
         <form action="{{ $editing ? route('stocks.update', $editing) : route('stocks.store') }}" method="POST" class="space-y-4" @submit="prepareSubmit($event)">
             @csrf
             @if ($editing) @method('PUT') @else <input type="hidden" name="bulk" :value="mode === 'bulk' ? 1 : 0">@endif
