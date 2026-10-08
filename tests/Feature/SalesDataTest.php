@@ -6,7 +6,6 @@ use App\Models\PhoneModel;
 use App\Models\Sale;
 use Database\Seeders\PhoneModelSeeder;
 use Database\Seeders\SaleSeeder;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,13 +24,15 @@ class SalesDataTest extends TestCase
         $this->assertSame('012345678901234', $sale->imei);
     }
 
-    public function test_imei_must_be_unique(): void
+    public function test_sale_snapshots_can_reuse_an_imei_without_creating_duplicate_stock(): void
     {
-        $this->createSale('123456789012345');
+        $firstSale = $this->createSale('123456789012345');
+        $secondSale = $this->createSale('123456789012345');
 
-        $this->expectException(QueryException::class);
-
-        $this->createSale('123456789012345');
+        $this->assertSame($firstSale->imei, $secondSale->imei);
+        $this->assertNull($firstSale->stock_id);
+        $this->assertNull($secondSale->stock_id);
+        $this->assertDatabaseCount('stocks', 0);
     }
 
     public function test_sales_support_soft_delete_and_restore(): void

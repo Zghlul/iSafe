@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Sale;
 use App\Models\Setting;
+use App\Services\StockMetricsService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -38,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
                 ->latest('sale_date')
                 ->limit(5)
                 ->get(['id', 'model', 'buyer_name', 'profit']);
+            $lowStockCount = app(StockMetricsService::class)->lowStockModels()->count();
 
             $view->with([
                 'sidebarMonthlyTarget' => $target,
@@ -45,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
                 'sidebarTargetProgress' => $target > 0 ? min(100, (int) round($revenue * 100 / $target)) : 0,
                 'sidebarStoreLogo' => $storeLogo,
                 'sidebarLossSales' => $lossSales,
+                'sidebarLowStockCount' => $lowStockCount,
             ]);
         });
     }

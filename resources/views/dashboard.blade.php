@@ -76,6 +76,30 @@
         @endforeach
     </div>
 
+    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <a href="{{ route('stocks.index', ['tab' => 'available']) }}" class="block">
+            <x-app.card>
+                <p class="text-xs font-semibold text-text-muted">Stok tersedia</p>
+                <p class="mt-2 text-xl font-semibold tabular-nums">{{ number_format($stock['available_units']) }} unit</p>
+                <p class="mt-1 text-xs text-text-muted">Modal tertahan {{ $compactMoney($stock['stock_value']) }}</p>
+            </x-app.card>
+        </a>
+        <a href="{{ route('stocks.index', ['tab' => 'available', 'view' => 'summary']) }}" class="block">
+            <x-app.card>
+                <p class="text-xs font-semibold text-text-muted">Model stok menipis</p>
+                <p class="mt-2 text-xl font-semibold tabular-nums {{ $stock['low_stock_models'] > 0 ? 'text-warning' : '' }}">{{ number_format($stock['low_stock_models']) }}</p>
+                <p class="mt-1 text-xs text-text-muted">Di bawah batas minimum</p>
+            </x-app.card>
+        </a>
+        <a href="{{ route('stocks.index', ['tab' => 'available', 'old' => 1]) }}" class="block">
+            <x-app.card>
+                <p class="text-xs font-semibold text-text-muted">Stok berumur lebih dari {{ $stock['old_stock_days'] }} hari</p>
+                <p class="mt-2 text-xl font-semibold tabular-nums">{{ number_format($stock['old_units']) }} unit</p>
+                <p class="mt-1 text-xs text-text-muted">Perlu ditinjau</p>
+            </x-app.card>
+        </a>
+    </div>
+
     <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
         <x-app.card>
             <h2 class="card-title">Alur uang</h2>

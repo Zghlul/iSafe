@@ -23,10 +23,15 @@ class SettingsController extends Controller
             'store_name' => ['required', 'string', 'max:120'],
             'store_address' => ['nullable', 'string', 'max:500'],
             'monthly_target' => ['nullable', 'integer', 'min:0'],
+            'default_min_stock' => ['nullable', 'integer', 'min:0', 'max:65535'],
+            'old_stock_days' => ['required', 'integer', 'between:1,3650'],
+            'allow_manual_sale' => ['required', 'boolean'],
             'store_logo' => ['nullable', 'image', 'max:2048'],
         ]);
         $oldLogo = Setting::query()->where('key', 'store_logo')->value('value');
         unset($data['store_logo']);
+        $data['allow_manual_sale'] = $request->boolean('allow_manual_sale') ? '1' : '0';
+        $data['default_min_stock'] = $data['default_min_stock'] === null ? null : (string) $data['default_min_stock'];
         if ($request->hasFile('store_logo')) {
             $path = $request->file('store_logo')->store('store', 'public');
             $data['store_logo'] = $path;

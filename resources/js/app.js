@@ -9,28 +9,22 @@ import Chart from 'chart.js/auto';
 
 window.Alpine = Alpine;
 
-window.salesPage = (initial, imeiCheckUrl, openOnLoad = false) => ({
+window.salesPage = (initial, stockSearchUrl, openOnLoad = false, allowManual = true, initialStocks = []) => ({
     drawerOpen: openOnLoad,
     sale: { ...initial },
-    imeiStatus: '',
-    imeiMessage: '',
-    deletedSaleId: null,
-    imeiCheckedValue: '',
-    imeiRequestId: 0,
+    unitMode: initial.unit_mode ?? 'stock',
+    allowManual,
+    selectedStock: initial.stock ?? null,
+    stockQuery: '',
+    stockResults: initialStocks,
+    stockRequestId: 0,
 
     init() {
-        this.sale.originalImei = this.sale.imei;
-        this.$nextTick(() => {
-            for (const field of ['selling_price', 'cost_price']) {
-                const input = document.querySelector(`[name="${field}"]`);
-                if (input) input.value = this.formatDigits(input.value);
-            }
-            if (this.drawerOpen && this.sale.imei) this.checkImei();
-        });
+        this.$nextTick(() => this.normalizePriceInputs());
     },
 
     get profit() {
-        return (Number(this.sale.selling_price) || 0) - (Number(this.sale.cost_price) || 0);
+        return (Number(this.sale.selling_price) || 0) - (Number(this.selectedStock?.cost_price ?? this.sale.cost_price) || 0);
     },
 
     openDrawer(record = null) {
@@ -40,27 +34,23 @@ window.salesPage = (initial, imeiCheckUrl, openOnLoad = false) => ({
             seller_name: '',
             buyer_name: '',
             buyer_phone: '',
-            model: '',
-            storage: '',
-            color: '',
-            condition: 'new',
-            imei: '',
             selling_price: '',
-            cost_price: '',
             payment_method: 'transfer',
             notes: '',
         };
-        this.sale.originalImei = this.sale.imei;
-        this.imeiStatus = '';
-        this.imeiMessage = '';
-        this.deletedSaleId = null;
+        this.selectedStock = record?.stock ?? null;
+        this.unitMode = 'stock';
+        this.stockQuery = '';
+        this.stockResults = [];
         this.drawerOpen = true;
-        this.$nextTick(() => {
-            for (const field of ['selling_price', 'cost_price']) {
-                const input = document.querySelector(`[name="${field}"]`);
-                if (input) input.value = this.formatDigits(input.value);
-            }
-        });
+        this.$nextTick(() => this.normalizePriceInputs());
+    },
+
+    normalizePriceInputs() {
+        for (const field of ['selling_price', 'cost_price']) {
+            const input = document.querySelector(`[name="${field}"]`);
+            if (input) input.value = this.formatDigits(input.value);
+        }
     },
 
     formatDigits(value) {
@@ -80,66 +70,42 @@ window.salesPage = (initial, imeiCheckUrl, openOnLoad = false) => ({
         return `${sign}Rp ${new Intl.NumberFormat('id-ID').format(Math.abs(number))}`;
     },
 
-    async checkImei() {
-        const imei = String(this.sale.imei ?? '');
-        const requestId = ++this.imeiRequestId;
-        this.imeiCheckedValue = '';
-        this.deletedSaleId = null;
-
-        if (!/^\d{15}$/.test(imei)) {
-            this.imeiStatus = imei ? 'invalid' : '';
-            this.imeiMessage = imei ? 'Masukkan tepat 15 digit angka.' : '';
-            this.imeiCheckedValue = imei;
+    async searchStocks() {
+        const query = this.stockQuery.trim();
+        const requestId = ++this.stockRequestId;
+        if (query.length < 2) {
+            this.stockResults = [];
             return;
         }
-
-        if (this.sale.id && imei === this.sale.originalImei) {
-            this.imeiStatus = 'valid';
-            this.imeiMessage = 'IMEI ini milik transaksi yang sedang diedit.';
-            this.imeiCheckedValue = imei;
-            return;
-        }
-
         try {
-            const url = new URL(imeiCheckUrl, window.location.origin);
-            url.searchParams.set('imei', imei);
-            if (this.sale.id) url.searchParams.set('except', this.sale.id);
+            const url = new URL(stockSearchUrl, window.location.origin);
+            url.searchParams.set('q', query);
             const response = await fetch(url, {
                 headers: { Accept: 'application/json' },
                 credentials: 'same-origin',
             });
-            if (!response.ok) throw new Error('Pemeriksaan IMEI gagal.');
-            const result = await response.json();
-            if (requestId !== this.imeiRequestId) return;
-            this.imeiCheckedValue = imei;
-            this.imeiStatus = result.status;
-            this.deletedSaleId = result.status === 'deleted' ? result.id : null;
-            this.imeiMessage = ({
-                valid: 'IMEI valid dan belum tercatat.',
-                checksum: 'IMEI tidak lolos pemeriksaan checksum.',
-                duplicate: 'IMEI ini sudah digunakan transaksi lain.',
-                deleted: `IMEI milik transaksi terhapus #${result.id}. Pulihkan terlebih dahulu.`,
-                invalid: 'Masukkan tepat 15 digit angka.',
-            })[result.status] ?? '';
-        } catch (error) {
-            if (requestId !== this.imeiRequestId) return;
-            this.imeiStatus = 'error';
-            this.imeiMessage = 'IMEI belum dapat diperiksa. Coba lagi sebelum menyimpan.';
+            if (!response.ok) throw new Error('Pencarian stok gagal.');
+            const results = await response.json();
+            if (requestId === this.stockRequestId) this.stockResults = results;
+        } catch {
+            if (requestId === this.stockRequestId) this.stockResults = [];
         }
     },
 
+    chooseStock(stock) {
+        this.selectedStock = stock;
+        this.stockResults = [];
+        this.stockQuery = '';
+    },
+
     async prepareSubmit(event) {
-        const imei = String(this.sale.imei ?? '');
-        if (this.imeiCheckedValue !== imei) {
-            await this.checkImei();
-        }
-        if (this.imeiCheckedValue !== imei || this.imeiStatus !== 'valid') {
+        if (this.unitMode === 'stock' && !this.selectedStock) {
             event.preventDefault();
             return;
         }
         for (const field of ['selling_price', 'cost_price']) {
-            const input = event.target.querySelector(`[name="${field}"]`);
-            if (input) input.value = String(this.sale[field] ?? '').replace(/\D/g, '');
+            const input = event.target.querySelector(`[name="${field}"]:not(:disabled)`);
+            if (input) input.value = input.value.replace(/\D/g, '');
         }
     },
 
@@ -209,6 +175,7 @@ window.dashboardCharts = (revenue, profit, payments) => ({
                     },
                 },
             });
+
         }
 
         const profitCanvas = document.getElementById('profit-chart');
@@ -251,6 +218,79 @@ window.dashboardCharts = (revenue, profit, payments) => ({
                 },
             });
         }
+    },
+});
+
+window.stockPage = (imeiCheckUrl, openOnLoad = false, initialImei = '') => ({
+    drawerOpen: openOnLoad,
+    mode: 'single',
+    condition: 'new',
+    imei: initialImei,
+    imeiStatus: '',
+    imeiMessage: '',
+    checkedImei: '',
+    requestId: 0,
+
+    init() {
+        if (this.drawerOpen && this.imei) this.checkImei();
+    },
+
+    openDrawer() {
+        this.mode = 'single';
+        this.condition = 'new';
+        this.imei = '';
+        this.imeiStatus = '';
+        this.imeiMessage = '';
+        this.checkedImei = '';
+        this.drawerOpen = true;
+    },
+
+    async checkImei() {
+        const imei = String(this.imei ?? '');
+        const requestId = ++this.requestId;
+        this.checkedImei = '';
+
+        if (!/^\d{15}$/.test(imei)) {
+            this.imeiStatus = imei ? 'invalid' : '';
+            this.imeiMessage = imei ? 'Masukkan tepat 15 digit angka.' : '';
+            this.checkedImei = imei;
+            return;
+        }
+
+        try {
+            const url = new URL(imeiCheckUrl, window.location.origin);
+            url.searchParams.set('imei', imei);
+            const response = await fetch(url, { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
+            if (!response.ok) throw new Error('Pemeriksaan IMEI gagal.');
+            const result = await response.json();
+            if (requestId !== this.requestId) return;
+            this.checkedImei = imei;
+            this.imeiStatus = result.status;
+            this.imeiMessage = ({
+                valid: 'IMEI valid dan belum tercatat.',
+                checksum: 'IMEI tidak lolos pemeriksaan checksum.',
+                duplicate: 'IMEI ini sudah digunakan pada unit stok lain.',
+                deleted: `IMEI ada pada unit terhapus #${result.id}. Pulihkan unit tersebut.`,
+                invalid: 'Masukkan tepat 15 digit angka.',
+            })[result.status] ?? '';
+        } catch {
+            if (requestId !== this.requestId) return;
+            this.imeiStatus = 'error';
+            this.imeiMessage = 'IMEI belum dapat diperiksa. Coba lagi.';
+        }
+    },
+
+    async prepareSubmit(event) {
+        if (this.mode === 'bulk') return;
+        const imei = String(this.imei ?? '');
+        if (this.checkedImei !== imei) await this.checkImei();
+        if (this.checkedImei !== imei || this.imeiStatus !== 'valid') event.preventDefault();
+    },
+
+    selectAll(event) {
+        document.querySelectorAll('.stock-selection:not(:disabled)').forEach((checkbox) => {
+            checkbox.checked = event.target.checked;
+        });
     },
 });
 

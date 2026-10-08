@@ -20,7 +20,7 @@ class AuthenticationTest extends TestCase
         $this->actingAs(User::factory()->create())
             ->get('/dashboard')
             ->assertOk()
-            ->assertSee('Bangaldi / Ruang kerja')
+            ->assertSee('iSafe / Ruang kerja')
             ->assertSee('Transaksi terbaru')
             ->assertSee('Omzet 12 bulan terakhir');
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sale extends Model
@@ -47,6 +48,7 @@ class Sale extends Model
      */
     protected $fillable = [
         'sale_date',
+        'stock_id',
         'seller_name',
         'buyer_name',
         'buyer_phone',
@@ -89,6 +91,11 @@ class Sale extends Model
             ->when(filled($filters['condition'] ?? null), fn (Builder $query) => $query->where('condition', $filters['condition']))
             ->when(filled($filters['payment_method'] ?? null), fn (Builder $query) => $query->where('payment_method', $filters['payment_method']))
             ->when(filled($filters['seller'] ?? null), fn (Builder $query) => $query->where('seller_name', $filters['seller']));
+    }
+
+    public function stock(): BelongsTo
+    {
+        return $this->belongsTo(Stock::class);
     }
 
     /**

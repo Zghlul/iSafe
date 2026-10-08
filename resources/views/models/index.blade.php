@@ -34,10 +34,13 @@
                 @forelse ($models as $model)
                     <tr class="border-t border-border">
                         <td class="px-4 py-3">
-                            <form id="update-model-{{ $model->id }}" action="{{ route('models.update', $model) }}" method="POST" class="flex items-center gap-3">
+                            <form id="update-model-{{ $model->id }}" action="{{ route('models.update', $model) }}" method="POST" class="flex flex-wrap items-center gap-3">
                                 @csrf @method('PUT')
                                 <input name="name" value="{{ $model->name }}" required maxlength="80" aria-label="Nama model iPhone" class="h-10 min-w-0 flex-1 rounded-md border border-border-strong bg-surface px-3 text-sm">
-                                <button type="submit" class="min-h-9 rounded-md border border-border-strong px-3 text-xs font-semibold">Simpan</button>
+                                            <label class="flex items-center gap-2 text-xs font-semibold text-text-muted">Stok min.
+                                                <input name="min_stock" type="number" min="0" max="65535" value="{{ $model->min_stock }}" aria-label="Stok minimum {{ $model->name }}" class="h-10 w-24 rounded-md border border-border-strong bg-surface px-2 text-sm">
+                                            </label>
+                                            <button type="submit" class="min-h-9 rounded-md border border-border-strong px-3 text-xs font-semibold">Simpan</button>
                             </form>
                         </td>
                         <td class="px-4 py-3 text-right">

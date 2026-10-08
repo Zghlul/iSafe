@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 
 class DashboardService
 {
-    public function summary(array $filters): array
+    public function summary(array $filters, StockMetricsService $stockMetrics): array
     {
         [$from, $to] = $this->period($filters);
         $duration = max(1, $from->diffInDays($to) + 1);
@@ -27,6 +27,7 @@ class DashboardService
         return [
             'from' => $from,
             'to' => $to,
+            'stock' => $stockMetrics->overview(),
             'current' => $current,
             'previous' => $previous,
             'changes' => [

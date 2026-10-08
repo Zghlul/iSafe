@@ -7,6 +7,9 @@ use App\Http\Requests\StoreSaleRequest;
 use App\Http\Requests\UpdateSaleRequest;
 use App\Models\PhoneModel;
 use App\Models\Sale;
+use App\Models\Setting;
+use App\Models\Stock;
+use App\Services\StockService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -38,19 +41,22 @@ class SalesController extends Controller
             ->withQueryString();
 
         $editing = $request->filled('edit')
-            ? Sale::query()->find($request->integer('edit'))
+            ? Sale::query()->with('stock.phoneModel')->find($request->integer('edit'))
             : null;
 
         return view('sales.index', [
             'sales' => $sales,
             'totals' => $totals,
             'models' => PhoneModel::query()->orderBy('name')->pluck('name'),
+            'phoneModels' => PhoneModel::query()->orderBy('name')->get(['id', 'name']),
             'sellers' => Sale::query()->distinct()->orderBy('seller_name')->pluck('seller_name'),
             'filters' => $request->only([
                 'q', 'from', 'to', 'model', 'condition', 'payment_method', 'seller', 'sort', 'direction',
             ]),
             'deleted' => $deleted,
             'editing' => $editing,
+            'allowManualSale' => (bool) Setting::value(Setting::ALLOW_MANUAL_SALE, '1'),
+            'availableStocks' => Stock::available()->with('phoneModel:id,name')->orderBy('purchase_date')->limit(20)->get(),
         ]);
     }
 
@@ -83,54 +89,87 @@ class SalesController extends Controller
         return response()->json(['status' => $passesLuhn ? 'valid' : 'checksum']);
     }
 
-    public function store(StoreSaleRequest $request): RedirectResponse
+    public function store(StoreSaleRequest $request, StockService $stocks): RedirectResponse
     {
-        Sale::query()->create($request->validated());
+        $data = $request->validated();
+        $manual = $data['unit_mode'] === 'manual';
+        $stockId = $data['stock_id'] ?? null;
+        unset($data['unit_mode'], $data['stock_id']);
+        $saleAttributes = array_intersect_key($data, array_flip([
+            'sale_date', 'seller_name', 'buyer_name', 'buyer_phone',
+            'selling_price', 'payment_method', 'notes',
+        ]));
+
+        if ($manual) {
+            $model = PhoneModel::query()->findOrFail($data['phone_model_id']);
+            $stockAttributes = array_intersect_key($data, array_flip([
+                'phone_model_id', 'storage', 'color', 'condition', 'imei',
+                'cost_price', 'battery_health', 'variant', 'physical_grade',
+                'accessories', 'warranty_until', 'source_name',
+            ]));
+            $stockAttributes['purchase_date'] = $data['sale_date'];
+            $stocks->manualSale($stockAttributes, $saleAttributes);
+        } else {
+            $stocks->sell((int) $stockId, $saleAttributes);
+        }
 
         return redirect()->route('sales.index')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
-    public function update(UpdateSaleRequest $request, Sale $sale): RedirectResponse
+    public function update(UpdateSaleRequest $request, Sale $sale, StockService $stocks): RedirectResponse
     {
-        $sale->update($request->validated());
+        $data = $request->validated();
+        $stockId = (int) $data['stock_id'];
+        unset($data['stock_id']);
+        $stocks->replaceSaleUnit($sale, $stockId, $data);
 
         return redirect()->route('sales.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
-    public function destroy(Sale $sale): RedirectResponse
+    public function destroy(Sale $sale, StockService $stocks): RedirectResponse
     {
-        $sale->delete();
+        $stocks->cancelSale($sale);
 
         return back()->with('success', 'Transaksi dipindahkan ke data terhapus.');
     }
 
-    public function restore(int $id): RedirectResponse
+    public function restore(int $id, StockService $stocks): RedirectResponse
     {
-        Sale::onlyTrashed()->findOrFail($id)->restore();
+        $stocks->restoreSale($id);
 
         return redirect()->route('sales.index')->with('success', 'Transaksi berhasil dipulihkan.');
     }
 
-    public function bulkDelete(Request $request): RedirectResponse
+    public function bulkDelete(Request $request, StockService $stocks): RedirectResponse
     {
         $ids = $request->validate([
             'ids' => ['required', 'array', 'min:1'],
             'ids.*' => ['integer', 'distinct', 'exists:sales,id'],
         ])['ids'];
 
-        $deleted = Sale::query()->whereIn('id', $ids)->delete();
+        $deleted = 0;
+
+        foreach ($ids as $id) {
+            $stocks->cancelSale(Sale::query()->findOrFail($id));
+            $deleted++;
+        }
 
         return back()->with('success', "{$deleted} transaksi dipindahkan ke data terhapus.");
     }
 
-    public function bulkRestore(Request $request): RedirectResponse
+    public function bulkRestore(Request $request, StockService $stocks): RedirectResponse
     {
         $ids = $request->validate([
             'ids' => ['required', 'array', 'min:1'],
             'ids.*' => ['integer', 'distinct', 'exists:sales,id'],
         ])['ids'];
 
-        $restored = Sale::onlyTrashed()->whereIn('id', $ids)->restore();
+        $restored = 0;
+
+        foreach ($ids as $id) {
+            $stocks->restoreSale((int) $id);
+            $restored++;
+        }
 
         return redirect()->route('sales.index', ['deleted' => 1])
             ->with('success', "{$restored} transaksi berhasil dipulihkan.");

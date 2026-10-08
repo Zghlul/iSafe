@@ -15,7 +15,7 @@
     <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <x-app.card>
             <h2 class="card-title">Profil usaha</h2>
-            <p class="mt-1 text-xs text-text-muted">Informasi yang ditampilkan di aplikasi dan laporan.</p>
+            <p class="mt-1 text-xs text-text-muted">Informasi usaha, target penjualan, dan pengaturan stok.</p>
             <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="mt-5 space-y-4">
                 @csrf @method('PUT')
                 <div>
@@ -33,6 +33,23 @@
                     <input id="monthly-target" name="monthly_target" type="number" min="0" step="1" value="{{ old('monthly_target', $settings['monthly_target'] ?? '') }}" inputmode="numeric" class="h-11 w-full rounded-md border border-border-strong bg-surface px-3 text-sm tabular-nums">
                     @error('monthly_target')<p class="mt-1 text-xs text-danger">{{ $message }}</p>@enderror
                 </div>
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div>
+                        <label for="default-min-stock" class="mb-2 block text-[13px] font-semibold">Stok minimum default</label>
+                        <input id="default-min-stock" name="default_min_stock" type="number" min="0" max="65535" value="{{ old('default_min_stock', $settings['default_min_stock'] ?? '') }}" placeholder="Kosong = tanpa peringatan" class="h-11 w-full rounded-md border border-border-strong bg-surface px-3 text-sm">
+                        @error('default_min_stock')<p class="mt-1 text-xs text-danger">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label for="old-stock-days" class="mb-2 block text-[13px] font-semibold">Batas stok lama (hari)</label>
+                        <input id="old-stock-days" name="old_stock_days" type="number" min="1" max="3650" value="{{ old('old_stock_days', $settings['old_stock_days'] ?? 30) }}" required class="h-11 w-full rounded-md border border-border-strong bg-surface px-3 text-sm">
+                        @error('old_stock_days')<p class="mt-1 text-xs text-danger">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+                <input type="hidden" name="allow_manual_sale" value="0">
+                <label class="flex items-start gap-3 rounded-md border border-border p-3 text-sm">
+                    <input name="allow_manual_sale" type="checkbox" value="1" @checked((bool) old('allow_manual_sale', $settings['allow_manual_sale'] ?? '1')) class="mt-0.5">
+                    <span><span class="font-semibold">Izinkan penjualan tanpa stok</span><span class="mt-1 block text-xs font-normal text-text-muted">Bila aktif, unit manual otomatis dicatat sebagai stok terjual.</span></span>
+                </label>
                 <div>
                     <label for="store-logo" class="mb-2 block text-[13px] font-semibold">Logo usaha</label>
                     <input id="store-logo" name="store_logo" type="file" accept="image/png,image/jpeg,image/webp" class="block min-h-11 w-full rounded-md border border-border-strong bg-surface px-3 py-2 text-sm">
