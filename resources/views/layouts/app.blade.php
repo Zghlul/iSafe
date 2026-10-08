@@ -48,18 +48,18 @@
                         Ringkasan
                         @if (request()->routeIs('dashboard'))<span class="ml-auto size-2 rounded-full bg-accent" aria-hidden="true"></span>@endif
                     </a>
-                    <a href="{{ route('sales.index') }}" @if (request()->routeIs('sales.*')) aria-current="page" @endif @class(['mt-1 flex min-h-10 items-center gap-3 rounded-md px-3 text-sm', 'bg-surface font-semibold text-text' => request()->routeIs('sales.*'), 'text-sidebar-text hover:bg-white/5' => ! request()->routeIs('sales.*')])>
-                        <svg viewBox="0 0 24 24" class="size-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M4 5.5h16v13H4zM8 9h8M8 13h5" />
-                        </svg>
-                        Transaksi
-                    </a>
                     <a href="{{ route('stocks.index') }}" @if (request()->routeIs('stocks.*')) aria-current="page" @endif @class(['mt-1 flex min-h-10 items-center gap-3 rounded-md px-3 text-sm', 'bg-surface font-semibold text-text' => request()->routeIs('stocks.*'), 'text-sidebar-text hover:bg-white/5' => ! request()->routeIs('stocks.*')])>
                         <svg viewBox="0 0 24 24" class="size-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5zM4.5 7.8 12 12l7.5-4.2M12 12v8.5M8 5.3l8 4.5" />
                         </svg>
                         Stok
                         @if ($sidebarLowStockCount > 0)<span class="ml-auto rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold text-warning" aria-label="{{ $sidebarLowStockCount }} model menipis">{{ $sidebarLowStockCount }}</span>@endif
+                    </a>
+                    <a href="{{ route('sales.index') }}" @if (request()->routeIs('sales.*')) aria-current="page" @endif @class(['mt-1 flex min-h-10 items-center gap-3 rounded-md px-3 text-sm', 'bg-surface font-semibold text-text' => request()->routeIs('sales.*'), 'text-sidebar-text hover:bg-white/5' => ! request()->routeIs('sales.*')])>
+                        <svg viewBox="0 0 24 24" class="size-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 5.5h16v13H4zM8 9h8M8 13h5" />
+                        </svg>
+                        Transaksi
                     </a>
                     <a href="{{ route('reports.show', 'monthly') }}" @if (request()->routeIs('reports.*')) aria-current="page" @endif @class(['mt-1 flex min-h-10 items-center gap-3 rounded-md px-3 text-sm', 'bg-surface font-semibold text-text' => request()->routeIs('reports.*'), 'text-sidebar-text hover:bg-white/5' => ! request()->routeIs('reports.*')])>
                         <svg viewBox="0 0 24 24" class="size-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
