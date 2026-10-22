@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\PhoneModel;
 use App\Models\Stock;
+use Database\Seeders\StorefrontDemoStockSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -64,5 +65,17 @@ class StorefrontTest extends TestCase
             ->assertSee('Cara cari unit')
             ->assertSee('Belum ada unit yang ditampilkan.')
             ->assertSee('0851 8366 0490');
+    }
+
+    public function test_demo_stock_is_clearly_marked_on_the_public_catalog(): void
+    {
+        $this->seed(StorefrontDemoStockSeeder::class);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Mode katalog demo.')
+            ->assertSee('bukan stok atau penawaran nyata')
+            ->assertSee('Contoh')
+            ->assertSee('Tanya model serupa');
     }
 }

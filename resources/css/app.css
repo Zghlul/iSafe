@@ -618,6 +618,41 @@ input {
     border-top: 1px solid #deded9;
 }
 
+.store-demo-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+    padding: 14px 16px;
+    border: 1px solid #e7c980;
+    border-radius: 6px;
+    background: #fff7df;
+    color: #5e491d;
+}
+
+.store-demo-notice-mark {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background: #f0d58b;
+    color: #503b0a;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.store-demo-notice p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.65;
+}
+
+.store-demo-notice strong {
+    font-weight: 800;
+}
+
 .store-stock-overview {
     display: grid;
     grid-template-columns: auto auto 1fr auto;

@@ -23,6 +23,7 @@ class StorefrontController extends Controller
                 'battery_health',
                 'variant',
                 'physical_grade',
+                'source_name',
             ])
             ->groupBy(fn (Stock $stock): string => implode('|', [
                 $stock->phone_model_id,
@@ -32,10 +33,16 @@ class StorefrontController extends Controller
                 $stock->variant ?? '',
                 $stock->physical_grade ?? '',
                 $stock->battery_health ?? '',
+                $stock->source_name ?? '',
             ]));
+
+        $demoUnitCount = $products->sum(
+            fn ($units): int => $units->first()->source_name === 'Demo katalog' ? $units->count() : 0,
+        );
 
         return view('welcome', [
             'products' => $products,
+            'demoUnitCount' => $demoUnitCount,
             'whatsappNumber' => '6285183660490',
         ]);
     }

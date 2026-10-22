@@ -97,6 +97,13 @@
         </section>
 
         <section id="katalog" class="store-catalog">
+            @if ($demoUnitCount > 0)
+                <aside class="store-demo-notice" role="note" data-reveal>
+                    <span class="store-demo-notice-mark" aria-hidden="true">i</span>
+                    <p><strong>Mode katalog demo.</strong> {{ $demoUnitCount }} unit yang ditandai “Contoh” adalah data dummy, bukan stok atau penawaran nyata.</p>
+                </aside>
+            @endif
+
             <div class="store-catalog-heading">
                 <div>
                     <p class="store-eyebrow"><span></span> Pilihan yang tersedia</p>
@@ -117,11 +124,14 @@
                                 'other' => 'Lainnya',
                                 default => null,
                             };
-                            $productMessage = 'Halo iSafe, saya tertarik dengan '.$product->phoneModel->name.' '.$product->storage.' warna '.$product->color.' ('.$conditionLabel.'). Boleh minta info harga dan ketersediaannya?';
+                            $isDemoProduct = $product->source_name === 'Demo katalog';
+                            $productMessage = $isDemoProduct
+                                ? 'Halo iSafe, saya melihat data contoh '.$product->phoneModel->name.' '.$product->storage.' warna '.$product->color.' di katalog. Apakah ada unit nyata dengan model serupa?'
+                                : 'Halo iSafe, saya tertarik dengan '.$product->phoneModel->name.' '.$product->storage.' warna '.$product->color.' ('.$conditionLabel.'). Boleh minta info harga dan ketersediaannya?';
                         @endphp
                         <article class="store-product-card" data-reveal>
                             <div class="store-product-visual">
-                                <span class="store-product-badge">{{ $conditionLabel }}</span>
+                                <span class="store-product-badge">{{ $isDemoProduct ? 'Contoh' : $conditionLabel }}</span>
                                 <span class="store-product-count">{{ $units->count() }} {{ $units->count() === 1 ? 'unit' : 'unit' }}</span>
                                 <div class="store-product-device" aria-hidden="true">
                                     <span class="store-product-camera camera-a"></span>
@@ -152,7 +162,7 @@
                                     @endif
                                 </div>
                                 <a href="{{ $whatsappUrl }}?text={{ rawurlencode($productMessage) }}" class="store-product-cta">
-                                    Tanya unit ini <span aria-hidden="true">↗</span>
+                                    {{ $isDemoProduct ? 'Tanya model serupa' : 'Tanya unit ini' }} <span aria-hidden="true">↗</span>
                                 </a>
                             </div>
                         </article>
