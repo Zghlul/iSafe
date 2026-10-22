@@ -74,6 +74,12 @@ class SalesDataTest extends TestCase
 
         $this->seed(SaleSeeder::class);
 
+        $this->assertSame(0, Sale::query()->count());
+
+        config(['app.seed_demo_data' => true]);
+
+        $this->seed(SaleSeeder::class);
+
         $this->assertSame(80, Sale::query()->count());
 
         foreach (Sale::query()->pluck('imei') as $imei) {

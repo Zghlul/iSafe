@@ -15,8 +15,14 @@ class StockSeeder extends Seeder
 
     public function run(): void
     {
-        if (app()->environment() !== 'local') {
+        if (! app()->environment('local') || ! config('app.seed_demo_data')) {
             return;
+        }
+
+        if (! function_exists('fake')) {
+            throw new RuntimeException(
+                'Helper Faker tidak tersedia. Data contoh hanya dapat dibuat di lokal dengan dependensi pengembangan terpasang.',
+            );
         }
 
         app(StockBackfillService::class)->run();

@@ -41,7 +41,11 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        $this->call(SaleSeeder::class);
-        $this->call(StockSeeder::class);
+        if (app()->environment('local') && config('app.seed_demo_data')) {
+            $this->call([
+                SaleSeeder::class,
+                StockSeeder::class,
+            ]);
+        }
     }
 }

@@ -14,8 +14,16 @@ class SaleSeeder extends Seeder
      */
     public function run(): void
     {
-        if (app()->environment() !== 'local' || Sale::withTrashed()->exists()) {
+        if (! app()->environment('local')
+            || ! config('app.seed_demo_data')
+            || Sale::withTrashed()->exists()) {
             return;
+        }
+
+        if (! function_exists('fake')) {
+            throw new RuntimeException(
+                'Helper Faker tidak tersedia. Data contoh hanya dapat dibuat di lokal dengan dependensi pengembangan terpasang.',
+            );
         }
 
         $models = PhoneModel::query()->pluck('name')->all();

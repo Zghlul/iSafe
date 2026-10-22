@@ -18,14 +18,14 @@ Aplikasi admin untuk mengelola unit stok iPhone per IMEI, mencatat penjualan, me
    npm install
    ```
 
-2. Isi `.env` lokal dengan `APP_KEY`, koneksi database MySQL, serta `ADMIN_NAME`, `ADMIN_EMAIL`, dan `ADMIN_PASSWORD`. Jangan menyimpan atau membagikan nilai rahasia di Git.
+2. Isi `.env` lokal dengan `APP_KEY`, koneksi database MySQL, serta `ADMIN_NAME`, `ADMIN_EMAIL`, dan `ADMIN_PASSWORD`. Set `SEED_DEMO_DATA=true` hanya jika ingin menambahkan data transaksi dan stok contoh. Jangan menyimpan atau membagikan nilai rahasia di Git.
 3. Jalankan migrasi dan seeder:
 
    ```powershell
    php artisan migrate --seed
    ```
 
-   Seeder menyiapkan akun admin dan daftar model. Data transaksi contoh dan hingga 60 unit stok contoh hanya dibuat di environment `local`.
+   Seeder menyiapkan akun admin dan daftar model. Data transaksi dan hingga 60 unit stok contoh hanya dibuat jika environment `local` dan `SEED_DEMO_DATA=true`. Di hosting, biarkan `SEED_DEMO_DATA=false`; data contoh memerlukan dependensi pengembangan dan tidak cocok untuk database produksi.
 4. Jalankan aplikasi dan Vite pada dua terminal:
 
    ```powershell

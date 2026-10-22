@@ -28,6 +28,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'seed_demo_data' => (bool) env('SEED_DEMO_DATA', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

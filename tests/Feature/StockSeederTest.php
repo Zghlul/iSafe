@@ -25,6 +25,12 @@ class StockSeederTest extends TestCase
 
         $this->seed(StockSeeder::class);
 
+        $this->assertSame(0, Stock::query()->count());
+
+        config(['app.seed_demo_data' => true]);
+
+        $this->seed(StockSeeder::class);
+
         $this->assertSame(60, Stock::query()
             ->where('source_name', 'Seed lokal')
             ->where('status', Stock::STATUS_AVAILABLE)
