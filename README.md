@@ -25,7 +25,7 @@ Aplikasi admin untuk mengelola unit stok iPhone per IMEI, mencatat penjualan, me
    php artisan migrate --seed
    ```
 
-   Seeder menyiapkan akun admin dan daftar model. Data transaksi contoh hanya dibuat di environment `local`, jika database belum mempunyai transaksi.
+   Seeder menyiapkan akun admin dan daftar model. Data transaksi contoh dan hingga 60 unit stok contoh hanya dibuat di environment `local`.
 4. Jalankan aplikasi dan Vite pada dua terminal:
 
    ```powershell

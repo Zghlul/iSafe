@@ -105,9 +105,12 @@ input {
     color: #17191e;
 }
 
-.store-header,
 .store-hero,
+.store-stock-overview,
 .store-catalog,
+.store-howto,
+.store-guide,
+.store-faq,
 .store-contact,
 .store-footer {
     width: min(1160px, calc(100% - 64px));
@@ -115,15 +118,31 @@ input {
 }
 
 .store-header {
+    position: sticky;
+    z-index: 20;
+    top: 0;
+    width: 100%;
+    margin-inline: 0;
     border-bottom: 1px solid #deded9;
+    background: rgb(244 242 237 / 92%);
+    backdrop-filter: blur(14px);
+    transition: box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.store-header.is-scrolled {
+    border-color: rgb(222 222 217 / 75%);
+    background: rgb(250 249 245 / 94%);
+    box-shadow: 0 8px 22px rgb(23 25 30 / 6%);
 }
 
 .store-nav {
     display: flex;
+    width: min(1160px, calc(100% - 64px));
     min-height: 76px;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
+    margin-inline: auto;
 }
 
 .store-brand {
@@ -148,6 +167,12 @@ input {
     font-size: 20px;
     font-weight: 800;
     letter-spacing: -0.1em;
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), background 240ms ease;
+}
+
+.store-brand:hover .store-brand-mark {
+    transform: rotate(-8deg) scale(1.06);
+    background: #c5ef68;
 }
 
 .store-brand-period {
@@ -162,15 +187,46 @@ input {
 
 .store-nav-links a,
 .store-admin-link {
+    position: relative;
     color: #62666d;
     font-size: 12px;
     font-weight: 600;
     text-decoration: none;
+    transition: color 180ms ease, transform 180ms ease;
+}
+
+.store-nav-links a {
+    padding-block: 8px;
+}
+
+.store-nav-links a::after {
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+    left: 0;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    border-radius: 2px;
+    background: #315be5;
+    content: "";
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .store-nav-links a:hover,
+.store-nav-links a[aria-current="location"],
 .store-admin-link:hover {
     color: #315be5;
+}
+
+.store-nav-links a:hover,
+.store-nav-links a[aria-current="location"] {
+    transform: translateY(-1px);
+}
+
+.store-nav-links a:hover::after,
+.store-nav-links a[aria-current="location"]::after {
+    transform: scaleX(1);
 }
 
 .store-nav-cta {
@@ -185,15 +241,24 @@ input {
     font-size: 12px;
     font-weight: 700;
     text-decoration: none;
+    transition: transform 200ms ease, border-color 200ms ease, background 200ms ease, box-shadow 200ms ease;
 }
 
 .store-nav-cta:hover {
+    transform: translateY(-2px);
     border-color: #17191e;
+    background: #fbfaf7;
+    box-shadow: 0 6px 15px rgb(23 25 30 / 8%);
 }
 
 .store-whatsapp-icon {
     color: #348357;
     font-size: 15px;
+    transition: transform 200ms ease;
+}
+
+.store-nav-cta:hover .store-whatsapp-icon {
+    transform: translate(2px, -2px) rotate(8deg);
 }
 
 .store-hero {
@@ -274,29 +339,53 @@ input {
     font-size: 12px;
     font-weight: 700;
     text-decoration: none;
-    transition: transform 160ms ease, background 160ms ease;
+    transition: transform 200ms ease, background 200ms ease, box-shadow 200ms ease;
 }
 
 .store-primary-button:hover {
     transform: translateY(-2px);
     background: #315be5;
     border-color: #315be5;
+    box-shadow: 0 8px 18px rgb(49 91 229 / 18%);
 }
 
 .store-primary-button span {
     font-size: 15px;
+    transition: transform 200ms ease;
+}
+
+.store-primary-button:hover span,
+.store-primary-button:focus-visible span {
+    transform: translate(3px, -2px);
+}
+
+.store-hero-actions .store-primary-button:hover span,
+.store-hero-actions .store-primary-button:focus-visible span {
+    transform: translateY(3px);
 }
 
 .store-secondary-link {
+    display: inline-flex;
+    align-items: center;
     color: #33363c;
     font-size: 12px;
     font-weight: 700;
     text-decoration: none;
+    transition: color 180ms ease;
 }
 
 .store-secondary-link span {
     margin-left: 5px;
     color: #315be5;
+    transition: transform 180ms ease;
+}
+
+.store-secondary-link:hover {
+    color: #315be5;
+}
+
+.store-secondary-link:hover span {
+    transform: translate(3px, -3px);
 }
 
 .store-hero-footnote {
@@ -368,6 +457,7 @@ input {
     z-index: 2;
     transform: translate(-29px, 3px) rotate(-12deg);
     background: linear-gradient(145deg, #b9c1ae, #87947c 65%, #76836d);
+    animation: store-phone-float-back 5s ease-in-out infinite;
 }
 
 .store-phone-front {
@@ -375,6 +465,7 @@ input {
     transform: translate(53px, -12px) rotate(12deg);
     overflow: hidden;
     background: #161a20;
+    animation: store-phone-float-front 5s ease-in-out infinite;
 }
 
 .store-phone-front::before {
@@ -505,6 +596,11 @@ input {
 .store-featured-arrow {
     color: #315be5;
     font-size: 17px;
+    transition: transform 220ms ease;
+}
+
+.store-featured-product:hover .store-featured-arrow {
+    transform: translate(3px, -3px);
 }
 
 .store-art-caption {
@@ -520,6 +616,61 @@ input {
 .store-catalog {
     padding-block: 75px 98px;
     border-top: 1px solid #deded9;
+}
+
+.store-stock-overview {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 28px;
+    padding-block: 18px;
+    border-top: 1px solid #deded9;
+    border-bottom: 1px solid #deded9;
+}
+
+.store-overview-stat {
+    display: grid;
+    gap: 2px;
+}
+
+.store-overview-stat strong {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 1;
+}
+
+.store-overview-stat span,
+.store-stock-overview > p {
+    color: #74766f;
+    font-size: 10px;
+}
+
+.store-stock-overview > p {
+    margin: 0;
+    justify-self: end;
+}
+
+.store-stock-overview > a {
+    color: #315be5;
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 180ms ease;
+}
+
+.store-stock-overview > a span {
+    margin-left: 5px;
+    display: inline-block;
+    transition: transform 180ms ease;
+}
+
+.store-stock-overview > a:hover {
+    color: #2549c9;
+}
+
+.store-stock-overview > a:hover span {
+    transform: translateY(3px);
 }
 
 .store-catalog-heading {
@@ -558,6 +709,21 @@ input {
     border: 1px solid #e0e0db;
     border-radius: 7px;
     background: #fbfaf7;
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.store-product-card:hover {
+    transform: translateY(-5px);
+    border-color: #c9cfc1;
+    box-shadow: 0 14px 30px rgb(32 37 33 / 9%);
+}
+
+.store-product-device {
+    transition: transform 250ms ease;
+}
+
+.store-product-card:hover .store-product-device {
+    transform: rotate(-2deg) translateY(-4px);
 }
 
 .store-product-visual {
@@ -740,15 +906,23 @@ input {
     font-size: 10px;
     font-weight: 700;
     text-decoration: none;
+    transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
 }
 
 .store-product-cta span {
+    display: inline-block;
     color: #315be5;
     font-size: 13px;
+    transition: transform 180ms ease;
 }
 
 .store-product-cta:hover {
     border-color: #315be5;
+    background: #f1f4ff;
+}
+
+.store-product-cta:hover span {
+    transform: translate(3px, -3px);
 }
 
 .store-empty-catalog {
@@ -802,6 +976,169 @@ input {
     border-radius: 9px;
     background: #202a3d;
     color: #fff;
+}
+
+.store-howto,
+.store-faq {
+    padding-block: 74px 82px;
+    border-top: 1px solid #deded9;
+}
+
+.store-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.store-section-heading h2,
+.store-guide h2 {
+    margin: 14px 0 0;
+    font-size: clamp(36px, 4.5vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.075em;
+    line-height: 1.03;
+}
+
+.store-section-heading h2 em,
+.store-guide h2 em {
+    color: #315be5;
+    font-style: normal;
+}
+
+.store-section-heading > p {
+    max-width: 330px;
+    margin: 0 0 3px;
+    color: #74766f;
+    font-size: 11px;
+    line-height: 1.75;
+}
+
+.store-howto-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 31px;
+}
+
+.store-howto-card {
+    min-height: 175px;
+    padding: 22px;
+    border: 1px solid #deded9;
+    border-radius: 6px;
+    background: #fbfaf7;
+}
+
+.store-howto-card > span,
+.store-guide-list article > span {
+    color: #315be5;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.store-howto-card h3,
+.store-guide-list h3 {
+    margin: 20px 0 7px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.store-howto-card p,
+.store-guide-list p {
+    margin: 0;
+    color: #74766f;
+    font-size: 10px;
+    line-height: 1.8;
+}
+
+.store-guide {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(35px, 8vw, 100px);
+    padding-block: 76px;
+    border-top: 1px solid #deded9;
+    border-bottom: 1px solid #deded9;
+}
+
+.store-guide-copy > p:last-child {
+    max-width: 390px;
+    margin: 17px 0 0;
+    color: #74766f;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.store-guide-list {
+    display: grid;
+}
+
+.store-guide-list article {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 10px;
+    padding-block: 16px;
+    border-bottom: 1px solid #deded9;
+}
+
+.store-guide-list article:first-child {
+    padding-top: 0;
+}
+
+.store-guide-list article:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.store-guide-list h3 {
+    margin: 0 0 5px;
+}
+
+.store-faq-list {
+    max-width: 780px;
+    margin-top: 30px;
+    border-top: 1px solid #deded9;
+}
+
+.store-faq-list details {
+    padding: 17px 0;
+    border-bottom: 1px solid #deded9;
+}
+
+.store-faq-list summary {
+    position: relative;
+    padding-right: 25px;
+    color: #25282d;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+.store-faq-list summary::-webkit-details-marker {
+    display: none;
+}
+
+.store-faq-list summary::after {
+    position: absolute;
+    right: 3px;
+    color: #315be5;
+    content: "+";
+    font-size: 17px;
+    line-height: 1;
+}
+
+.store-faq-list details[open] summary::after {
+    content: "−";
+}
+
+.store-faq-list details p {
+    max-width: 650px;
+    margin: 11px 0 0;
+    color: #74766f;
+    font-size: 11px;
+    line-height: 1.8;
 }
 
 .store-contact-mark {
@@ -892,6 +1229,11 @@ input {
 .store-contact-arrow {
     margin-left: auto;
     color: #315be5;
+    transition: transform 180ms ease;
+}
+
+.store-contact-button:hover .store-contact-arrow {
+    transform: translate(3px, -3px);
 }
 
 .store-footer {
@@ -922,6 +1264,65 @@ input {
 .store-admin-link span {
     margin-left: 4px;
     color: #315be5;
+    display: inline-block;
+    transition: transform 180ms ease;
+}
+
+.store-admin-link:hover span {
+    transform: translate(3px, -3px);
+}
+
+@keyframes store-phone-float-back {
+    0%, 100% { transform: translate(-29px, 3px) rotate(-12deg); }
+    50% { transform: translate(-29px, -5px) rotate(-10deg); }
+}
+
+@keyframes store-phone-float-front {
+    0%, 100% { transform: translate(53px, -12px) rotate(12deg); }
+    50% { transform: translate(53px, -19px) rotate(10deg); }
+}
+
+@keyframes store-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(22px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.has-store-reveal [data-reveal] {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 650ms ease, transform 650ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.has-store-reveal [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.store-howto-grid [data-reveal]:nth-child(2) {
+    transition-delay: 90ms;
+}
+
+.store-howto-grid [data-reveal]:nth-child(3) {
+    transition-delay: 180ms;
+}
+
+.store-product-grid [data-reveal]:nth-child(3n + 2) {
+    transition-delay: 70ms;
+}
+
+.store-product-grid [data-reveal]:nth-child(3n) {
+    transition-delay: 140ms;
+}
+
+.store-faq-list details[open] p {
+    animation: store-reveal 240ms ease both;
 }
 
 @media (max-width: 900px) {
@@ -949,23 +1350,52 @@ input {
         grid-template-columns: 1fr;
         gap: 22px;
     }
+
+    .store-stock-overview {
+        grid-template-columns: auto auto 1fr;
+        gap: 18px;
+    }
+
+    .store-stock-overview > a {
+        display: none;
+    }
+
+    .store-guide {
+        gap: 35px;
+    }
 }
 
 @media (max-width: 600px) {
-    .store-header,
     .store-hero,
+    .store-stock-overview,
     .store-catalog,
+    .store-howto,
+    .store-guide,
+    .store-faq,
     .store-contact,
     .store-footer {
         width: calc(100% - 36px);
     }
 
     .store-nav {
+        width: calc(100% - 36px);
         min-height: 67px;
     }
 
     .store-nav-links {
         display: none;
+    }
+
+    .store-stock-overview {
+        grid-template-columns: 1fr 1fr;
+        gap: 13px;
+        padding-block: 17px;
+    }
+
+    .store-stock-overview > p {
+        grid-column: 1 / -1;
+        justify-self: start;
+        line-height: 1.6;
     }
 
     .store-hero {
@@ -1019,6 +1449,45 @@ input {
     .store-catalog-heading > p {
         max-width: 400px;
         margin-top: 14px;
+    }
+
+    .store-howto,
+    .store-faq {
+        padding-block: 58px;
+    }
+
+    .store-section-heading {
+        display: block;
+    }
+
+    .store-section-heading > p {
+        margin-top: 14px;
+    }
+
+    .store-howto-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 23px;
+    }
+
+    .store-howto-card {
+        min-height: 0;
+        padding: 18px;
+    }
+
+    .store-howto-card h3 {
+        margin-top: 13px;
+    }
+
+    .store-guide {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding-block: 58px;
+    }
+
+    .store-section-heading h2,
+    .store-guide h2 {
+        font-size: 38px;
     }
 
     .store-product-grid {
@@ -1083,7 +1552,35 @@ input {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .store-primary-button {
+    *,
+    *::before,
+    *::after {
+        transition: none;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+
+    .has-store-reveal [data-reveal] {
+        opacity: 1;
+        transform: none;
+    }
+
+    .store-header,
+    .store-brand-mark,
+    .store-nav-links a,
+    .store-nav-links a::after,
+    .store-nav-cta,
+    .store-whatsapp-icon,
+    .store-primary-button span,
+    .store-secondary-link,
+    .store-secondary-link span,
+    .store-featured-arrow,
+    .store-stock-overview > a,
+    .store-stock-overview > a span,
+    .store-product-cta,
+    .store-product-cta span,
+    .store-contact-arrow,
+    .store-admin-link span {
         transition: none;
     }
 }

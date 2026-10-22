@@ -13,6 +13,7 @@
         $heroGroup = $products->first();
         $heroProduct = $heroGroup?->first();
         $whatsappUrl = 'https://wa.me/'.$whatsappNumber;
+        $availableUnits = $products->sum(fn ($units) => $units->count());
     @endphp
 
     <header class="store-header">
@@ -23,7 +24,8 @@
             </a>
             <div class="store-nav-links">
                 <a href="#katalog">Katalog</a>
-                <a href="#tentang">Tentang toko</a>
+                <a href="#cara-beli">Cara beli</a>
+                <a href="#faq">FAQ</a>
             </div>
             <a href="{{ $whatsappUrl }}?text={{ rawurlencode('Halo iSafe, saya ingin tanya soal iPhone yang tersedia.') }}" class="store-nav-cta">
                 <span class="store-whatsapp-icon" aria-hidden="true">↗</span>
@@ -81,6 +83,19 @@
             </div>
         </section>
 
+        <section class="store-stock-overview" aria-label="Ringkasan stok" data-reveal>
+            <div class="store-overview-stat">
+                <strong>{{ $availableUnits }}</strong>
+                <span>unit tersedia</span>
+            </div>
+            <div class="store-overview-stat">
+                <strong>{{ $products->count() }}</strong>
+                <span>pilihan konfigurasi</span>
+            </div>
+            <p>Stok dapat berubah. Konfirmasi unit yang Anda inginkan sebelum datang atau melakukan pembayaran.</p>
+            <a href="#katalog">Jelajahi katalog <span aria-hidden="true">↓</span></a>
+        </section>
+
         <section id="katalog" class="store-catalog">
             <div class="store-catalog-heading">
                 <div>
@@ -104,7 +119,7 @@
                             };
                             $productMessage = 'Halo iSafe, saya tertarik dengan '.$product->phoneModel->name.' '.$product->storage.' warna '.$product->color.' ('.$conditionLabel.'). Boleh minta info harga dan ketersediaannya?';
                         @endphp
-                        <article class="store-product-card">
+                        <article class="store-product-card" data-reveal>
                             <div class="store-product-visual">
                                 <span class="store-product-badge">{{ $conditionLabel }}</span>
                                 <span class="store-product-count">{{ $units->count() }} {{ $units->count() === 1 ? 'unit' : 'unit' }}</span>
@@ -155,7 +170,80 @@
             @endif
         </section>
 
-        <section id="tentang" class="store-contact">
+        <section id="cara-beli" class="store-howto">
+            <div class="store-section-heading">
+                <div data-reveal>
+                    <p class="store-eyebrow"><span></span> Mulai dari yang sederhana</p>
+                    <h2>Cara cari unit <em>yang pas.</em></h2>
+                </div>
+                <p>Belum perlu langsung memutuskan. Kenali pilihannya, tanyakan detail, lalu lanjutkan jika sudah cocok.</p>
+            </div>
+            <div class="store-howto-grid">
+                <article class="store-howto-card" data-reveal>
+                    <span>01</span>
+                    <h3>Pilih dari katalog</h3>
+                    <p>Lihat model, kapasitas, warna, dan keterangan kondisi yang tercantum pada setiap unit.</p>
+                </article>
+                <article class="store-howto-card" data-reveal>
+                    <span>02</span>
+                    <h3>Tanya detail unit</h3>
+                    <p>Tekan tombol WhatsApp pada unit untuk menanyakan harga, kondisi, dan ketersediaannya.</p>
+                </article>
+                <article class="store-howto-card" data-reveal>
+                    <span>03</span>
+                    <h3>Pastikan sebelum deal</h3>
+                    <p>Konfirmasi kembali detail unit dan kesepakatan dengan toko sebelum melakukan pembayaran.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="store-guide">
+            <div class="store-guide-copy" data-reveal>
+                <p class="store-eyebrow"><span></span> Panduan singkat</p>
+                <h2>Perhatikan detailnya,<br><em>pilih dengan nyaman.</em></h2>
+                <p>Setiap unit punya kondisi dan kelengkapan yang berbeda. Gunakan informasi di katalog sebagai awal, lalu minta detail yang Anda perlukan.</p>
+            </div>
+            <div class="store-guide-list" data-reveal>
+                <article>
+                    <span aria-hidden="true">01</span>
+                    <div><h3>Kondisi unit</h3><p>Baru atau second? Pastikan kondisi yang dimaksud dan tanyakan detail unit secara langsung.</p></div>
+                </article>
+                <article>
+                    <span aria-hidden="true">02</span>
+                    <div><h3>Baterai dan fisik</h3><p>Untuk unit second, cek kesehatan baterai dan grade fisik yang tercantum bila tersedia.</p></div>
+                </article>
+                <article>
+                    <span aria-hidden="true">03</span>
+                    <div><h3>Kapasitas dan kelengkapan</h3><p>Pilih kapasitas yang sesuai kebutuhan, lalu konfirmasi warna dan aksesori yang didapat.</p></div>
+                </article>
+            </div>
+        </section>
+
+        <section id="faq" class="store-faq">
+            <div class="store-section-heading">
+                <div data-reveal>
+                    <p class="store-eyebrow"><span></span> Sebelum menghubungi kami</p>
+                    <h2>Pertanyaan <em>umum.</em></h2>
+                </div>
+                <p>Belum menemukan jawabannya? Kami siap membantu lewat WhatsApp.</p>
+            </div>
+            <div class="store-faq-list">
+                <details data-reveal>
+                    <summary>Bagaimana cara mengetahui harga unit?</summary>
+                    <p>Harga bisa berbeda menurut model dan kondisi. Gunakan tombol “Tanya unit ini” untuk menanyakan harga terkini.</p>
+                </details>
+                <details data-reveal>
+                    <summary>Apakah stok di katalog selalu tersedia?</summary>
+                    <p>Stok dapat berubah setelah katalog diperbarui. Hubungi toko untuk memastikan unit masih tersedia sebelum berkunjung.</p>
+                </details>
+                <details data-reveal>
+                    <summary>Apa yang perlu ditanyakan untuk unit second?</summary>
+                    <p>Anda bisa menanyakan kesehatan baterai, kondisi fisik, kelengkapan, serta detail lain yang penting bagi Anda.</p>
+                </details>
+            </div>
+        </section>
+
+        <section id="tentang" class="store-contact" data-reveal>
             <div class="store-contact-mark" aria-hidden="true">i.</div>
             <div class="store-contact-copy">
                 <p class="store-eyebrow"><span></span> Mau tanya dulu juga boleh</p>

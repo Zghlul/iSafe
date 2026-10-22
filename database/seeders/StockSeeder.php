@@ -11,6 +11,8 @@ use RuntimeException;
 
 class StockSeeder extends Seeder
 {
+    private const TARGET_STOCK_COUNT = 60;
+
     public function run(): void
     {
         if (app()->environment() !== 'local') {
@@ -27,11 +29,11 @@ class StockSeeder extends Seeder
 
         $existing = Stock::query()->where('source_name', 'Seed lokal')->count();
 
-        if ($existing >= 40) {
+        if ($existing >= self::TARGET_STOCK_COUNT) {
             return;
         }
 
-        foreach (range($existing + 1, 40) as $index) {
+        foreach (range($existing + 1, self::TARGET_STOCK_COUNT) as $index) {
             $condition = fake()->randomElement(Sale::CONDITIONS);
             Stock::query()->create([
                 'phone_model_id' => fake()->randomElement($models),

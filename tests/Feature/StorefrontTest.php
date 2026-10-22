@@ -41,6 +41,10 @@ class StorefrontTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('Katalog')
+            ->assertSee('Cara cari unit')
+            ->assertSee('Pertanyaan')
+            ->assertSee('<strong>1</strong>', false)
+            ->assertSee('unit tersedia')
             ->assertSee('iPhone 15 Pro')
             ->assertSee('128GB')
             ->assertSee('Natural Titanium')
@@ -55,6 +59,9 @@ class StorefrontTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
+            ->assertSee('<strong>0</strong>', false)
+            ->assertSee('unit tersedia')
+            ->assertSee('Cara cari unit')
             ->assertSee('Belum ada unit yang ditampilkan.')
             ->assertSee('0851 8366 0490');
     }
