@@ -26,7 +26,7 @@
             aria-label="Navigasi utama"
         >
             <a href="{{ route('dashboard') }}" class="mb-8 flex items-center gap-3 px-2 text-on-primary">
-                <img src="{{ asset('images/isafe-logo-white.png') }}" alt="iSafe" class="h-auto w-32">
+                <img src="{{ asset('images/isafe-logo-white.png') }}" alt="iSafe" width="126" height="57" class="h-auto w-32">
             </a>
 
             <nav class="flex-1 space-y-6 overflow-y-auto" aria-label="Menu">

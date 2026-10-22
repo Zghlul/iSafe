@@ -22,7 +22,7 @@
     <header class="store-header">
         <nav class="store-nav" aria-label="Navigasi utama">
             <a href="{{ route('home') }}" class="store-brand" aria-label="iSafe, beranda">
-                <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" class="store-brand-image">
+                <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" width="126" height="57" class="store-brand-image">
             </a>
             <div class="store-nav-links">
                 <a href="#katalog">Katalog</a>
@@ -272,7 +272,7 @@
 
     <footer class="store-footer">
         <a href="{{ route('home') }}" class="store-brand" aria-label="iSafe, beranda">
-            <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" class="store-brand-image">
+            <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" width="126" height="57" class="store-brand-image">
         </a>
         <p>Temukan unit. Tanya detailnya. Putuskan dengan tenang.</p>
         <a href="{{ route('login') }}" class="store-admin-link">Masuk admin <span aria-hidden="true">↗</span></a>

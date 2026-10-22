@@ -13,7 +13,7 @@
 <body class="flex min-h-screen items-center justify-center px-4 py-8">
     <main class="w-full max-w-[420px]">
         <a href="{{ route('login') }}" class="mb-6 flex items-center justify-center gap-3" aria-label="iSafe">
-            <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" class="h-auto w-32">
+            <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" width="126" height="57" class="h-auto w-32">
             <span>
                 <span class="block text-xs text-text-muted">Pendataan penjualan iPhone</span>
             </span>
