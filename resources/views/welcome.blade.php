@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Lihat pilihan iPhone yang tersedia. Tanyakan detail unit dan harga langsung ke toko lewat WhatsApp.">
     <meta name="theme-color" content="#f3f4f6">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <title>iSafe — Temukan iPhone berikutnya</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -19,8 +22,7 @@
     <header class="store-header">
         <nav class="store-nav" aria-label="Navigasi utama">
             <a href="{{ route('home') }}" class="store-brand" aria-label="iSafe, beranda">
-                <span class="store-brand-mark" aria-hidden="true">i</span>
-                <span>iSafe<span class="store-brand-period">.</span></span>
+                <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" class="store-brand-image">
             </a>
             <div class="store-nav-links">
                 <a href="#katalog">Katalog</a>
@@ -270,8 +272,7 @@
 
     <footer class="store-footer">
         <a href="{{ route('home') }}" class="store-brand" aria-label="iSafe, beranda">
-            <span class="store-brand-mark" aria-hidden="true">i</span>
-            <span>iSafe<span class="store-brand-period">.</span></span>
+            <img src="{{ asset('images/isafe-logo.png') }}" alt="iSafe" class="store-brand-image">
         </a>
         <p>Temukan unit. Tanya detailnya. Putuskan dengan tenang.</p>
         <a href="{{ route('login') }}" class="store-admin-link">Masuk admin <span aria-hidden="true">↗</span></a>

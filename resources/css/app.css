@@ -156,27 +156,15 @@ input {
     text-decoration: none;
 }
 
-.store-brand-mark {
-    display: grid;
-    width: 33px;
-    height: 33px;
-    place-items: center;
-    border-radius: 9px;
-    background: #b6e548;
-    color: #17191e;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.1em;
-    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), background 240ms ease;
+.store-brand-image {
+    display: block;
+    width: 126px;
+    height: auto;
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.store-brand:hover .store-brand-mark {
-    transform: rotate(-8deg) scale(1.06);
-    background: #c5ef68;
-}
-
-.store-brand-period {
-    color: #315be5;
+.store-brand:hover .store-brand-image {
+    transform: scale(1.035);
 }
 
 .store-nav-links {
@@ -1283,11 +1271,8 @@ input {
     font-size: 17px;
 }
 
-.store-footer .store-brand-mark {
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
-    font-size: 17px;
+.store-footer .store-brand-image {
+    width: 110px;
 }
 
 .store-footer p {
@@ -1601,7 +1586,6 @@ input {
     }
 
     .store-header,
-    .store-brand-mark,
     .store-nav-links a,
     .store-nav-links a::after,
     .store-nav-cta,

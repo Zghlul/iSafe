@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon-48x48.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <title>@yield('title', 'Ringkasan') — {{ config('app.name', 'iSafe') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -23,15 +26,7 @@
             aria-label="Navigasi utama"
         >
             <a href="{{ route('dashboard') }}" class="mb-8 flex items-center gap-3 px-2 text-on-primary">
-                <span class="flex size-9 items-center justify-center rounded-md bg-accent text-text" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 18V6m0 12h16M8 15v-4m4 4V7m4 8v-6" />
-                    </svg>
-                </span>
-                <span>
-                    <span class="block text-base font-bold leading-tight">iSafe</span>
-                    <span class="block text-xs text-sidebar-text-muted">Penjualan iPhone</span>
-                </span>
+                <img src="{{ asset('images/isafe-logo-white.png') }}" alt="iSafe" class="h-auto w-32">
             </a>
 
             <nav class="flex-1 space-y-6 overflow-y-auto" aria-label="Menu">
